@@ -18,36 +18,31 @@ In this GitHub repo, we provide samples which will help you get started with `ML
 
 # Examples
 
-<style>
-table {
-    width:100%;
-}
-</style>
-
-<table align="middle" width=100%>  
+<table align="center" margin-left:auto;margin-right:auto;>  
   <tr>
-    <td align="middle" colspan="3">Classification</td>
+      <td align="middle" colspan="4"><b>Classification</b></td>
   </tr>
   <tr>
-    <td align="middle" width = 33%><img src="images/sentiment-analysis.png" alt="Binary classification chart"><br><a href="Sentiment Analysis"><b>Sentiment Analysis</b></a></td>
-    <td align="middle" width = 34%><img src="images/flower-classification.png" alt="Movie Recommender chart"><br><a href = "Iris"><b>Iris Flowers Classification</b></a></td>
-    <td align="middle" width = 33%></td>
+    <td align="middle" width = 25%><br><img src="images/sentiment-analysis.png" alt="Binary classification chart"><br><br><a href="Sentiment Analysis"><b>Sentiment Analysis</b></a></td>
+    <td align="middle" width = 25%><br><img src="images/flower-classification.png" alt="Movie Recommender chart"><br><br><a href = "Iris"><b>Iris Flowers Classification</b></a></td>
+    <td align="middle" width = 25%></td>
+    <td align="middle" width = 25%></td>
   <tr>
-    <td align="middle" colspan="3">Recommendation</td>
+      <td align="middle" colspan="4"><b>Recommendation</b></td>
   </tr>
   <tr>
-    <td align="middle"><img src="images/movie-recommendation.png" alt="Movie Recommender chart" ><br><a href = "Movie Recommendation"><b>Movie Recommender <br>(Matrix Factorization)</b></a></td>
-    <td></td>
-    <td></td>
+    <td align="middle" width = 25%><br><img src="images/movie-recommendation.png" alt="Movie Recommender chart" ><br><br><a href = "Movie Recommendation"><b>Movie Recommender <br>(Matrix Factorization)</b></a></td>
+     <td align="middle" width = 25%></td>
+     <td align="middle" width = 25%></td>
+     <td align="middle" width = 25%></td>
   </tr>
 </table>
-
 
 # Learn more
 
 See [ML.NET Guide](https://docs.microsoft.com/en-us/dotnet/machine-learning/) for detailed information on tutorials, ML basics, etc.
 
-See [MLNet Autopipeline project wesite](https://littlelittlecloud.github.io/machinelearning-auto-pipeline-site/index.html) for docs and articles.
+See [MLNet Autopipeline project wesite](https://littlelittlecloud.github.io/machinelearning-auto-pipeline-site/index.html) for docs and tutorials.
 
   
 
