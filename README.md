@@ -17,6 +17,7 @@ In this GitHub repo, we provide samples which will help you get started with `ML
 - [MLNet.CodeGenerator](https://littlelittlecloud.github.io/machinelearning-auto-pipeline-site/api/MLNet.CodeGenerator.html): (coming soon) Provides API for generating C# code for creating ML.Net pipeline.
 
 # Examples
+
 <style>
 table {
     width:100%;
@@ -28,17 +29,14 @@ table {
     <td align="middle" colspan="3">Classification</td>
   </tr>
   <tr>
-    <td align="middle"><img src="images/sentiment-analysis.png" alt="Binary classification chart"><br><b>Sentiment Analysis<br></b></td>
-    <td align="middle"><img src="images/flower-classification.png" alt="Movie Recommender chart"><br><b>Iris Flowers Classification <br></b></td>
-    <td align="middle"></td>
-  </tr> 
-    <td></td>
-  </tr> 
+    <td align="middle" width = 33%><img src="images/sentiment-analysis.png" alt="Binary classification chart"><br><a href="Sentiment Analysis"><b>Sentiment Analysis</b></a></td>
+    <td align="middle" width = 34%><img src="images/flower-classification.png" alt="Movie Recommender chart"><br><a href = "Iris"><b>Iris Flowers Classification</b></a></td>
+    <td align="middle" width = 33%></td>
   <tr>
     <td align="middle" colspan="3">Recommendation</td>
   </tr>
   <tr>
-    <td align="middle"><img src="images/movie-recommendation.png" alt="Movie Recommender chart" ><br><b>Movie Recommender <br>(Matrix Factorization)<br></b></td>
+    <td align="middle"><img src="images/movie-recommendation.png" alt="Movie Recommender chart" ><br><a href = "Movie Recommendation"><b>Movie Recommender <br>(Matrix Factorization)</b></a></td>
     <td></td>
     <td></td>
   </tr>
