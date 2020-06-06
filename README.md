@@ -23,12 +23,15 @@ In this GitHub repo, we provide samples which will help you get started with `ML
   <tr>
     <td align="middle"><img src="images/sentiment-analysis.png" alt="Binary classification chart"><br><b><a href="Sentiment Analysis">Sentiment Analysis</a></b></td>
     <td align="middle"><img src="images/flower-classification.png"><br><b><a href="Iris">Iris</a></b></td>
+    <td></td>
   <tr>
   <tr>
     <td align="middle" colspan="3">recommendation</td>
   </tr>
     <tr>
     <td align="middle"><img src="images/movie-recommendation.png"><br><b><a href="Movie Recommendation">Movie Recommendation</a></b></td>
+    <td></td>
+    <td></td>
   </tr>
 </table>
 
