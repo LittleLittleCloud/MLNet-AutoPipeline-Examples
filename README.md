@@ -21,7 +21,7 @@ In this GitHub repo, we provide samples which will help you get started with `ML
     <td align="middle" colspan="3">classification</td>
   </tr>
   <tr>
-    <td align="middle"><img src="images/sentiment-analysis.png"><br><b><a href="Sentiment Analysis">Sentiment Analysis</a></b></td>
+    <td align="middle"><img src="images/sentiment-analysis.png" alt="Binary classification chart"><br><b><a href="Sentiment Analysis">Sentiment Analysis</a></b></td>
     <td align="middle"><img src="images/flower-classification.png"><br><b><a href="Iris">Iris</a></b></td>
   <tr>
   <tr>
@@ -29,7 +29,7 @@ In this GitHub repo, we provide samples which will help you get started with `ML
   </tr>
     <tr>
     <td align="middle"><img src="images/movie-recommendation.png"><br><b><a href="Movie Recommendation">Movie Recommendation</a></b></td>
-  <tr>
+  </tr>
 </table>
 
 # Learn more
