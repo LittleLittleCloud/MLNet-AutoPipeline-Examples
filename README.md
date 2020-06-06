@@ -16,24 +16,25 @@ In this GitHub repo, we provide samples which will help you get started with `ML
 - [MLNet.Expert](https://littlelittlecloud.github.io/machinelearning-auto-pipeline-site/api/MLNet.Expert.html): (coming soon) An AutoML library build on top of `MLNet.AutoPipeline`. It's your best choice if you don't want to define pipeline yourself but want to rely on the power of AutoML. As what it name says, it's your MLNet expert.
 - [MLNet.CodeGenerator](https://littlelittlecloud.github.io/machinelearning-auto-pipeline-site/api/MLNet.CodeGenerator.html): (coming soon) Provides API for generating C# code for creating ML.Net pipeline.
 
+
 <table align="middle" width=100%>  
   <tr>
-    <td align="middle" colspan="3">classification</td>
+    <td align="middle" colspan="2">classification</td>
   </tr>
   <tr>
-    <td align="middle"><img src="images/sentiment-analysis.png" alt="Binary classification chart"><br><b><a href="Sentiment Analysis">Sentiment Analysis</a></b></td>
-    <td align="middle"><img src="images/flower-classification.png"><br><b><a href="Iris">Iris</a></b></td>
-    <td></td>
+    <td align="middle"><img src="images/sentiment-analysis.png" alt="Binary classification chart"><br><img src="images/app-type-getting-started-term-cursor.png" alt="Getting started icon"><br><b><a href="Sentiment Analysis">Sentiment Analysis</a></b></td>
+    <td align="middle"><img src="images/flower-classification.png"><br><img src="images/app-type-getting-started-term-cursor.png" alt="Getting started icon"><br><b><a href="Iris">Iris</a></b></td>
   <tr>
   <tr>
-    <td align="middle" colspan="3">recommendation</td>
+    <td align="middle" colspan="2">recommendation</td>
   </tr>
     <tr>
-    <td align="middle"><img src="images/movie-recommendation.png"><br><b><a href="Movie Recommendation">Movie Recommendation</a></b></td>
+    <td align="middle"><img src="images/movie-recommendation.png"><br><img src="images/app-type-getting-started-term-cursor.png" alt="Getting started icon"><br><b><a href="Movie Recommendation">Movie Recommendation</a></b></td>
     <td></td>
     <td></td>
   </tr>
 </table>
+
 
 # Learn more
 
