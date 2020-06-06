@@ -16,27 +16,33 @@ In this GitHub repo, we provide samples which will help you get started with `ML
 - [MLNet.Expert](https://littlelittlecloud.github.io/machinelearning-auto-pipeline-site/api/MLNet.Expert.html): (coming soon) An AutoML library build on top of `MLNet.AutoPipeline`. It's your best choice if you don't want to define pipeline yourself but want to rely on the power of AutoML. As what it name says, it's your MLNet expert.
 - [MLNet.CodeGenerator](https://littlelittlecloud.github.io/machinelearning-auto-pipeline-site/api/MLNet.CodeGenerator.html): (coming soon) Provides API for generating C# code for creating ML.Net pipeline.
 
-<table align="middle" width=100%>  
+# Examples
+
+<table align="center" margin-left:auto;margin-right:auto;>  
   <tr>
-    <td align="middle" colspan="3">classification</td>
+      <td align="middle" colspan="4"><b>Classification</b></td>
   </tr>
   <tr>
-    <td align="middle"><img src="images/sentiment-analysis.png"><br><b><a href="Sentiment Analysis">Sentiment Analysis</a></b></td>
-    <td align="middle"><img src="images/flower-classification.png"><br><b><a href="Iris">Iris</a></b></td>
+    <td align="middle" width = 25%><br><img src="images/sentiment-analysis.png" alt="Binary classification chart"><br><br><a href="Sentiment Analysis"><b>Sentiment Analysis</b></a></td>
+    <td align="middle" width = 25%><br><img src="images/flower-classification.png" alt="Movie Recommender chart"><br><br><a href = "Iris"><b>Iris Flowers Classification</b></a></td>
+    <td align="middle" width = 25%></td>
+    <td align="middle" width = 25%></td>
   <tr>
-  <tr>
-    <td align="middle" colspan="3">recommendation</td>
+      <td align="middle" colspan="4"><b>Recommendation</b></td>
   </tr>
-    <tr>
-    <td align="middle"><img src="images/movie-recommendation.png"><br><b><a href="Movie Recommendation">Movie Recommendation</a></b></td>
   <tr>
+    <td align="middle" width = 25%><br><img src="images/movie-recommendation.png" alt="Movie Recommender chart" ><br><br><a href = "Movie Recommendation"><b>Movie Recommender <br>(Matrix Factorization)</b></a></td>
+     <td align="middle" width = 25%></td>
+     <td align="middle" width = 25%></td>
+     <td align="middle" width = 25%></td>
+  </tr>
 </table>
 
 # Learn more
 
 See [ML.NET Guide](https://docs.microsoft.com/en-us/dotnet/machine-learning/) for detailed information on tutorials, ML basics, etc.
 
-See [MLNet Autopipeline project wesite](https://littlelittlecloud.github.io/machinelearning-auto-pipeline-site/index.html) for docs and articles.
+See [MLNet Autopipeline project wesite](https://littlelittlecloud.github.io/machinelearning-auto-pipeline-site/index.html) for docs and tutorials.
 
   
 
