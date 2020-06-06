@@ -1,5 +1,5 @@
 # **ML.Net AutoPipeline** Samples
-[ML.NET](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet) is a cross-platform open-source machine learning framework that makes machine learning accessible to .NET developers.
+[**ML.NET**](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet) is a cross-platform open-source machine learning framework that makes machine learning accessible to .NET developers.
 
 [**ML.Net AutoPipeline**](https://github.com/LittleLittleCloud/machinelearning-auto-pipeline) is a set of packages build on top of ML.Net that provide AutoML feature. 
 
@@ -29,9 +29,9 @@ In this GitHub repo, we provide samples which will help you get started with **M
 
 # Learn more
 
-See [MLNet Autopipeline project wesite](https://littlelittlecloud.github.io/machinelearning-auto-pipeline-site/index.html) for docs and tutorials.
+Visit [MLNet Autopipeline project website](https://littlelittlecloud.github.io/machinelearning-auto-pipeline-site/index.html) for docs and tutorials.
 
-See [ML.NET Guide](https://docs.microsoft.com/en-us/dotnet/machine-learning/) for detailed information on tutorials, ML basics, etc.
+Visit [ML.NET Guide](https://docs.microsoft.com/en-us/dotnet/machine-learning/) for detailed information on tutorials, ML basics, etc.
 
 
 
