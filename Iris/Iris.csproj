@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MLNet.Expert" Version="0.9.0-v202006019" />
+    <PackageReference Include="MLNet.Expert" Version="$(MLNETAUTOPIPELINEVERSION)" />
   </ItemGroup>
 
   <ItemGroup>

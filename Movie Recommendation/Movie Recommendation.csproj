@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ML.Recommender" Version="0.17.0-preview2" />
-    <PackageReference Include="MLNet.AutoPipeline" Version="0.9.0-v202006019" />
+    <PackageReference Include="MLNet.AutoPipeline" Version="$(MLNETAUTOPIPELINEVERSION)" />
   </ItemGroup>
 
   <ItemGroup>
