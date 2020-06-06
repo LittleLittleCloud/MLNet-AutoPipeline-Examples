@@ -23,14 +23,13 @@ In this GitHub repo, we provide samples which will help you get started with `ML
   </tr>
   <tr>
     <td align="middle"><img src="images/sentiment-analysis.png" alt="Binary classification chart"><br><img src="images/app-type-getting-started-term-cursor.png" alt="Getting started icon"><br><b><a href="Sentiment Analysis">Sentiment Analysis</a></b></td>
-    <td align="middle"><img src="images/flower-classification.png"><br><img src="images/app-type-getting-started-term-cursor.png" alt="Getting started icon"><br><b><a href="Iris">Iris</a></b></td>
+    <td align="middle"><img src="images/flower-classification.png"><br><img src="images/app-type-getting-started-term-cursor.png" alt="Getting started icon"><br><b><a href="Iris">Iris Flowers Classification</a></b></td>
   <tr>
   <tr>
     <td align="middle" colspan="2">recommendation</td>
   </tr>
     <tr>
     <td align="middle"><img src="images/movie-recommendation.png"><br><img src="images/app-type-getting-started-term-cursor.png" alt="Getting started icon"><br><b><a href="Movie Recommendation">Movie Recommendation</a></b></td>
-    <td></td>
     <td></td>
   </tr>
 </table>
