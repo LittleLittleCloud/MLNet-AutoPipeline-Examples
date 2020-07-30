@@ -9,7 +9,8 @@ In this GitHub repo, we provide both jupyter notebook example and C# project exa
 
 There are several ways to try jupyter notebook example
 - Start with [Binder](https://mybinder.org/), simply click on the badge below
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/LittleLittleCloud/MLNet-AutoPipeline-Examples/u/AddBinder)
+
+  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/LittleLittleCloud/MLNet-AutoPipeline-Examples/master)
 - Start with local jupyter notebook, you might need to [install dotnet interactive](https://github.com/dotnet/interactive/blob/master/docs/NotebooksLocalExperience.md) 
 
 # Examples
