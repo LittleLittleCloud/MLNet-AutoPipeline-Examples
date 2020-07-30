@@ -3,7 +3,14 @@
 
 [**ML.Net AutoPipeline**](https://github.com/LittleLittleCloud/machinelearning-auto-pipeline) is a set of packages build on top of ML.Net that provide AutoML feature. 
 
-In this GitHub repo, we provide samples which will help you get started with **ML.Net AutoPipeline**.
+In this GitHub repo, we provide both jupyter notebook example and C# project examples to help you get started with **ML.Net AutoPipeline**.
+
+# Jupyter notebook
+
+There are several ways to try jupyter notebook example
+- Start with [Binder](https://mybinder.org/), simply click on the badge below
+  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/LittleLittleCloud/MLNet-AutoPipeline-Examples/u/AddBinder)
+- Start with local jupyter notebook, you might need to [install dotnet interactive](https://github.com/dotnet/interactive/blob/master/docs/NotebooksLocalExperience.md) 
 
 # Examples
 
