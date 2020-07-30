@@ -5,8 +5,6 @@
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using MLNet.AutoPipeline;
-using MLNet.AutoPipeline.Experiment;
-using MLNet.AutoPipeline.Extension;
 using MLNet.AutoPipeline.Metric;
 using MLNet.Expert;
 using MLNet.Sweeper;
@@ -22,34 +20,18 @@ namespace Iris
             var context = new MLContext();
             var dataset = context.Data.LoadFromTextFile<Iris>(@".\iris.csv", separatorChar: ',', hasHeader: true);
             var split = context.Data.TrainTestSplit(dataset, 0.3);
-            var normalizeExpert = new NumericFeatureExpert(context, new NumericFeatureExpert.Option());
-
-            var classificationOption = new ClassificationExpert.Option()
-            {
-                UseNaiveBayes = false,
-                UseLbfgsMaximumEntropy = false,
-                UseLightGBM = false,
-                UseSdcaMaximumEntropy = false,
-                UseFastTreeOva = false,
-                UseGamOva = false,
-            };
-
-            var classificationExpert = new ClassificationExpert(context, classificationOption);
 
             var estimatorChain = context.Transforms.Conversion.MapValueToKey("species", "species")
-                          .Append(context.Transforms.Concatenate("features", new string[] { "sepal_length", "sepal_width", "petal_length", "petal_width" }))
-                          .Append((normalizeExpert.Propose("features") as EstimatorNodeGroup).OrNone())
-                          .Append(classificationExpert.Propose("species", "features"));
+                          .Append(context.Transforms.Concatenate("features", new string[] { "sepal_length" }))
+                          .Append(context.AutoML().MultiClassification.LbfgsMaximumEntropy("species", "features"));
 
             var experimentOption = new Experiment.Option()
             {
                 ScoreMetric = new MicroAccuracyMetric(),
-                Sweeper = new GaussProcessSweeper(new GaussProcessSweeper.Option()),
-                Iteration = 30,
                 Label = "species",
             };
 
-            var experiment = new Experiment(context, estimatorChain, experimentOption);
+            var experiment = context.AutoML().CreateExperiment(estimatorChain, experimentOption);
 
             var reporter = new Reporter();
 
@@ -86,8 +68,8 @@ namespace Iris
         {
             public void Report(IterationInfo value)
             {
+                Console.WriteLine(value.ParameterSet);
                 Console.WriteLine(value.SweepablePipeline.Summary());
-                Console.WriteLine(value.ParameterSet.ToString());
                 Console.WriteLine($"validate score: {value.ScoreMetric.Name}: {value.ScoreMetric.Score}");
                 Console.WriteLine($"training time: {value.TrainingTime}");
             }
