@@ -5,9 +5,6 @@
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using MLNet.AutoPipeline;
-using MLNet.AutoPipeline.Metric;
-using MLNet.Expert;
-using MLNet.Sweeper;
 using System;
 using System.Threading.Tasks;
 
@@ -27,22 +24,21 @@ namespace Iris
 
             var experimentOption = new Experiment.Option()
             {
-                ScoreMetric = new MicroAccuracyMetric(),
-                Label = "species",
+                EvaluateFunction = (MLContext context, IDataView data) =>
+                {
+                    return context.MulticlassClassification.Evaluate(data, "species").MicroAccuracy;
+                }
             };
 
             var experiment = context.AutoML().CreateExperiment(estimatorChain, experimentOption);
-
             var reporter = new Reporter();
-
-            var result = await experiment.TrainAsync(split.TrainSet, reporter: reporter);
-
+            var result = await experiment.TrainAsync(split.TrainSet, validateFraction: 0.1f, reporter: reporter);
             var bestModel = result.BestModel;
 
             // evaluate on test
             var eval = bestModel.Transform(split.TestSet);
             var metric = context.MulticlassClassification.Evaluate(eval, "species");
-            Console.WriteLine($"best model validate score: {result.BestIteration.ScoreMetric.Score}");
+            Console.WriteLine($"best model validate score: {result.BestIteration.EvaluateScore}");
             Console.WriteLine($"best model test score: {metric.MicroAccuracy}");
         }
 
@@ -68,9 +64,8 @@ namespace Iris
         {
             public void Report(IterationInfo value)
             {
-                Console.WriteLine(value.ParameterSet);
-                Console.WriteLine(value.SweepablePipeline.Summary());
-                Console.WriteLine($"validate score: {value.ScoreMetric.Name}: {value.ScoreMetric.Score}");
+                Console.WriteLine(value.Parameters);
+                Console.WriteLine($"validate score: {value.EvaluateScore}");
                 Console.WriteLine($"training time: {value.TrainingTime}");
             }
         }
