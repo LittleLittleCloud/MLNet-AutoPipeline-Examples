@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
-    <MLNETAUTOPIPELINEVERSION>0.9.0-v202006064</MLNETAUTOPIPELINEVERSION>
+    <MLNETAUTOPIPELINEVERSION>0.9.2</MLNETAUTOPIPELINEVERSION>
   </PropertyGroup>
 </Project>

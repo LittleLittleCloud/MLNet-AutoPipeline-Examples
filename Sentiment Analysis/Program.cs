@@ -7,7 +7,6 @@ using Microsoft.ML.Data;
 using Microsoft.ML.Trainers;
 using Microsoft.ML.Transforms.Text;
 using MLNet.AutoPipeline;
-using MLNet.AutoPipeline.Extension;
 using MLNet.Sweeper;
 using System;
 using System.Collections.Generic;
@@ -20,120 +19,131 @@ namespace MLNet.Examples.SentimentAnalysis
         {
             var context = new MLContext();
             context.Log += Context_Log;
+
             // Load Data
             var trainDataset = context.Data.LoadFromTextFile<ModelInput>(@".\datasets\wikipedia-detox-250-line-data-train.tsv", hasHeader: true);
             var testDataset = context.Data.LoadFromTextFile<ModelInput>(@".\datasets\wikipedia-detox-250-line-test.tsv", hasHeader: true);
 
             var normalizeTextOption = new NormalizeTextOption();
             var applyWordEmbeddingOption = new ApplyWordEmbeddingOption();
-            var sdcaOption = new SdcaLogisticRegressionOption();
 
             // Create pipeline
-            var pipelines = context.Transforms.Conversion.MapValueToKey("Sentiment-key", "Sentiment")
-                           .Append( // Create NormalizeText transformer and sweep over it.
-                               (NormalizeTextOption option) =>
+            var pipeline = context.Transforms.Conversion.MapValueToKey("Sentiment-key", "Sentiment")
+                           .Append(context.AutoML().SweepableTrainer(
+                               // Create NormalizeText transformer and sweep over it.
+                               (context, option) =>
                                {
                                    return context.Transforms.Text.NormalizeText(
-                                       option.outputColumnName,
-                                       option.inputColumnName,
-                                       option.caseMode,
-                                       option.keepDiacritics,
-                                       option.keepPunctuations,
-                                       option.keepNumbers);
+                                       option.OutputColumnName,
+                                       option.InputColumnName,
+                                       option.CaseMode,
+                                       option.KeepDiacritics,
+                                       option.KeepPunctuations,
+                                       option.KeepNumbers);
                                },
-                               normalizeTextOption)
+                               normalizeTextOption,
+                               new string[] { "SentimentText" },
+                               new string[] { "txt" },
+                               nameof(TextNormalizingEstimator)))
                            .Append(context.Transforms.Text.TokenizeIntoWords("txt", "txt"))
                            .Append(context.Transforms.Text.RemoveDefaultStopWords("txt", "txt"))
-                           .Append( // Create ApplyWordEmbedding transformer and sweep over it
-                               (ApplyWordEmbeddingOption option) =>
+                           .Append(context.AutoML().SweepableTrainer(
+                               // Create ApplyWordEmbedding transformer and sweep over it
+                               (context, option) =>
                                {
                                    return context.Transforms.Text.ApplyWordEmbedding(
                                        option.outputColumnName,
                                        option.inputColumnName,
-                                       option.modelKind);
+                                       option.ModelKind);
                                },
-                               applyWordEmbeddingOption)
-                           .Append(context.BinaryClassification.Trainers.SdcaLogisticRegression, sdcaOption);
+                               applyWordEmbeddingOption,
+                               new string[] { "txt" },
+                               new string[] { "txt" },
+                               nameof(WordEmbeddingEstimator)))
+                           .Append(
+                                   // use SdcaLogisticRegression and FastForest as trainer
+                                   context.AutoML().BinaryClassification.SdcaLogisticRegression("Sentiment", "txt"),
+                                   context.AutoML().BinaryClassification.FastForest("Sentiment", "txt"));
 
-            // Set up Sweeper Option
-            var valueGeneratorsList = new List<IValueGenerator>();
-            valueGeneratorsList.AddRange(normalizeTextOption.ValueGenerators);
-            valueGeneratorsList.AddRange(applyWordEmbeddingOption.ValueGenerators);
-            valueGeneratorsList.AddRange(sdcaOption.ValueGenerators);
-
-            var sweeperOption = new UniformRandomSweeper.Option();
-
-            var sweeper = new UniformRandomSweeper(sweeperOption);
-
-            pipelines.UseSweeper(sweeper);
-
-            foreach (var sweepingInfo in pipelines.Sweeping(100))
+            var experimentOption = new Experiment.Option()
             {
-                var pipeline = sweepingInfo.Pipeline;
-                Console.WriteLine(sweeper.Current.ToString());
+                EvaluateFunction = (MLContext context, IDataView data) =>
+                {
+                    return context.BinaryClassification.EvaluateNonCalibrated(data, "Sentiment").Accuracy;
+                },
+                MaximumTrainingTime = 60 * 60,
+                ParameterSweeperIteration = 100,
+            };
 
-                var eval = pipeline.Fit(trainDataset).Transform(testDataset);
-                var metrics = context.BinaryClassification.Evaluate(eval, "Sentiment");
+            var experiment = context.AutoML().CreateExperiment(pipeline, experimentOption);
+            var result = experiment.TrainAsync(trainDataset, 0.1f, new Reporter()).Result;
 
-                Console.WriteLine($"Accuracy: {metrics.Accuracy}");
-                Console.WriteLine($"AUC: {metrics.AreaUnderRocCurve}");
-                Console.WriteLine(string.Empty);
-            }
-
+            // evaluate on test
+            var eval = result.BestModel.Transform(testDataset);
+            var metric = context.BinaryClassification.EvaluateNonCalibrated(eval, "Sentiment");
+            Console.WriteLine($"best model validate score: {result.BestIteration.EvaluateScore}");
+            Console.WriteLine($"best model test score: {metric.Accuracy}");
         }
 
         private static void Context_Log(object sender, LoggingEventArgs e)
         {
-            Console.WriteLine(e.Message);
+            if (e.Source == "AutoPipeline")
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
-        public class NormalizeTextOption : OptionBuilder<NormalizeTextOption>
+        public class NormalizeTextOption : SweepableOption<NormalizeTextOption>
         {
-            public string outputColumnName = "txt";
+            public string OutputColumnName = "txt";
 
-            public string inputColumnName = "SentimentText";
+            public string InputColumnName = "SentimentText";
 
-            [Parameter(new object[] { TextNormalizingEstimator.CaseMode.Lower, TextNormalizingEstimator.CaseMode.None, TextNormalizingEstimator.CaseMode.Upper})]
-            public TextNormalizingEstimator.CaseMode caseMode = TextNormalizingEstimator.CaseMode.Lower;
+            public TextNormalizingEstimator.CaseMode CaseMode;
 
-            [Parameter(new object[] { true, false })]
-            public bool keepDiacritics = false;
+            [Parameter(nameof(CaseMode))]
+            public Parameter<TextNormalizingEstimator.CaseMode> CaseModeSweeper = CreateDiscreteParameter(TextNormalizingEstimator.CaseMode.Lower, TextNormalizingEstimator.CaseMode.None, TextNormalizingEstimator.CaseMode.Upper);
 
-            [Parameter(new object[] { true, false })]
-            public bool keepPunctuations = false;
+            public bool KeepDiacritics;
 
-            [Parameter(new object[] { true, false })]
-            public bool keepNumbers = false;
+            [Parameter(nameof(KeepDiacritics))]
+            public Parameter<bool> KeepDiacriticsSweeper = CreateDiscreteParameter(true, false);
+
+            public bool KeepPunctuations;
+
+            [Parameter(nameof(KeepPunctuations))]
+            public Parameter<bool> KeepPunctuationsSweeper = CreateDiscreteParameter(true, false);
+
+
+            public bool KeepNumbers;
+
+            [Parameter(nameof(KeepNumbers))]
+            public Parameter<bool> keepNumbers = CreateDiscreteParameter(true, false);
         }
 
-        public class ApplyWordEmbeddingOption : OptionBuilder<ApplyWordEmbeddingOption>
+        public class ApplyWordEmbeddingOption : SweepableOption<ApplyWordEmbeddingOption>
         {
             public string outputColumnName = "txt";
 
             public string inputColumnName = "txt";
 
-            [Parameter(
-                new object[]
-                {
-                    WordEmbeddingEstimator.PretrainedModelKind.FastTextWikipedia300D,
-                    WordEmbeddingEstimator.PretrainedModelKind.GloVe300D,
-                    WordEmbeddingEstimator.PretrainedModelKind.GloVeTwitter100D,
-                    WordEmbeddingEstimator.PretrainedModelKind.SentimentSpecificWordEmbedding,
-                })]
-            public WordEmbeddingEstimator.PretrainedModelKind modelKind = WordEmbeddingEstimator.PretrainedModelKind.FastTextWikipedia300D;
+            public WordEmbeddingEstimator.PretrainedModelKind ModelKind;
+
+            [Parameter(nameof(ModelKind))]
+            public Parameter<WordEmbeddingEstimator.PretrainedModelKind> ModelKindSweeper = CreateDiscreteParameter(WordEmbeddingEstimator.PretrainedModelKind.FastTextWikipedia300D,
+                                                                                                                WordEmbeddingEstimator.PretrainedModelKind.GloVe300D,
+                                                                                                                WordEmbeddingEstimator.PretrainedModelKind.GloVeTwitter100D,
+                                                                                                                WordEmbeddingEstimator.PretrainedModelKind.SentimentSpecificWordEmbedding);
         }
 
-        public class SdcaLogisticRegressionOption: OptionBuilder<SdcaLogisticRegressionBinaryTrainer.Options>
+        private class Reporter : IProgress<IterationInfo>
         {
-            public string FeatureColumnName = "txt";
-
-            public string LabelColumnName = "Sentiment";
-
-            [Parameter(0.0001f, 10f, true, 20)]
-            public float L1Regulation = 0.0001f;
-
-            [Parameter(0.0001f, 10f, true, 20)]
-            public float L2Regulation = 0.0001f;
+            public void Report(IterationInfo value)
+            {
+                Console.WriteLine(value.ParameterSet);
+                Console.WriteLine($"validate score: {value.EvaluateScore}");
+                Console.WriteLine($"training time: {value.TrainingTime}");
+            }
         }
     }
 }

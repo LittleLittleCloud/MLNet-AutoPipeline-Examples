@@ -23,65 +23,76 @@ namespace Movie_Recommendation
             var test_data = context.Data.LoadFromTextFile<ModelInput>(@".\recommendation-ratings-test.csv", separatorChar: ',', hasHeader: true);
 
             var gpSweeper = new GaussProcessSweeper(new GaussProcessSweeper.Option() { InitialPopulation = 50 });
-            var mfTrainer = new SweepableNode<MatrixFactorizationPredictionTransformer, Options>(context.Recommendation().Trainers.MatrixFactorization, paramaters);
-
-            var pipelines = new SweepablePipeline()
-                           .Append(context.Transforms.Conversion.MapValueToKey("userId", "userId"))
+            var pipeline = context.Transforms.Conversion.MapValueToKey("userId", "userId")
                            .Append(context.Transforms.Conversion.MapValueToKey("movieId", "movieId"))
-                           .Append(mfTrainer)
+                           .Append(context.AutoML().SweepableTrainer(
+                               (context, option) =>
+                               {
+                                   return context.Recommendation().Trainers.MatrixFactorization(option);
+                               },
+                               MFOption.Default,
+                               new string[] {"userId", "movieId"},
+                               new string[] {"Score"},
+                               nameof(MatrixFactorizationTrainer)))
                            .Append(context.Transforms.CopyColumns("output", "Score"));
 
-            pipelines.UseSweeper(gpSweeper);
-            Console.WriteLine(pipelines.Summary());
+            Console.WriteLine(pipeline.Summary());
 
-            RunResult bestHistory = null;
-            foreach (var sweepingInfo in pipelines.Sweeping(100))
+            var experimentOption = new Experiment.Option()
             {
-                var pipeline = sweepingInfo.Pipeline;
-                var eval = pipeline.Fit(train_data).Transform(test_data);
-                var metrics = context.Regression.Evaluate(eval, "rating", "Score");
-                Console.WriteLine(gpSweeper.Current.ToString());
-                var result = new RunResult(gpSweeper.Current, metrics.RootMeanSquaredError, false);
-
-                if (bestHistory == null || bestHistory?.MetricValue > result.MetricValue)
+                ParameterSweeper = gpSweeper,
+                ParameterSweeperIteration = 100,
+                EvaluateFunction = (MLContext context, IDataView data) =>
                 {
-                    bestHistory = result;
-                }
+                    return context.Recommendation().Evaluate(data, "rating").RootMeanSquaredError;
+                },
+                IsMaximizing = false
+            };
 
-                gpSweeper.AddRunHistory(result);
-                Console.WriteLine($"RMSE: {metrics.RootMeanSquaredError}");
-            }
+            var experiment = context.AutoML().CreateExperiment(pipeline, experimentOption);
+            var result = experiment.TrainAsync(train_data, validateFraction: 0.1f, new Reporter()).Result;
+            var bestModel = result.BestModel;
 
-            Console.WriteLine($"Best RMSE: {bestHistory.MetricValue}");
+            // evaluate on test
+            var eval = bestModel.Transform(test_data);
+            var rmse = context.Recommendation().Evaluate(eval, "rating").RootMeanSquaredError;
+            Console.WriteLine($"best model validate score: {result.BestIteration.EvaluateScore}");
+            Console.WriteLine($"best model test score: {rmse}");
         }
 
-        private class MFOption : OptionBuilder<MatrixFactorizationTrainer.Options>
+        private class MFOption : SweepableOption<MatrixFactorizationTrainer.Options>
         {
-            public string MatrixColumnIndexColumnName = "userId";
+            public static MFOption Default = new MFOption();
 
-            public string MatrixRowIndexColumnName = "movieId";
+            [Parameter]
+            public Parameter<string> MatrixColumnIndexColumnName = CreateFromSingleValue("userId");
 
-            public string LabelColumnName = "rating";
+            [Parameter]
+            public Parameter<string> MatrixRowIndexColumnName = CreateFromSingleValue("movieId");
 
-            public bool Quiet = true;
+            [Parameter]
+            public Parameter<string> LabelColumnName = CreateFromSingleValue("rating");
 
-            [Parameter(10, 100, false, 20)]
-            public int NumberOfIterations = 10;
+            [Parameter]
+            public Parameter<bool> Quiet = CreateFromSingleValue(true);
 
-            [Parameter(0.00001f, 0.1f, true)]
-            public float C = 0.00001f;
+            [Parameter]
+            public Parameter<int> NumberOfIterations = CreateInt32Parameter(10, 1000);
 
-            [Parameter(0.0001f, 1f, true)]
-            public float Alpha = 0.0001f;
+            [Parameter]
+            public Parameter<float> C = CreateFloatParameter(1E-5f, 1E-1f);
 
-            [Parameter(128, 512, steps: 20)]
-            public int ApproximationRank = 20;
+            [Parameter]
+            public Parameter<float> Alpha = CreateFloatParameter(1E-5f, 1f);
 
-            [Parameter(0.01f, 10f, true, 100)]
-            public double Lambda = 0.01f;
+            [Parameter]
+            public Parameter<int> ApproximationRank = CreateInt32Parameter(128, 512);
 
-            [Parameter(0.001f, 0.1f, true, 100)]
-            public double LearningRate = 0.001f;
+            [Parameter]
+            public Parameter<double> Lambda = CreateDoubleParameter(0.01, 10);
+
+            [Parameter]
+            public Parameter<double> LearningRate = CreateDoubleParameter(1E-5, 1E-1);
         }
 
         private class ModelInput
@@ -94,6 +105,16 @@ namespace Movie_Recommendation
 
             [ColumnName("rating"), LoadColumn(2)]
             public float Rating { get; set; }
+        }
+
+        private class Reporter : IProgress<IterationInfo>
+        {
+            public void Report(IterationInfo value)
+            {
+                Console.WriteLine(value.ParameterSet);
+                Console.WriteLine($"validate score: {value.EvaluateScore}");
+                Console.WriteLine($"training time: {value.TrainingTime}");
+            }
         }
     }
 }
