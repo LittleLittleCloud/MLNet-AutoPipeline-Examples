@@ -28,8 +28,7 @@ namespace MLNet.Examples.SentimentAnalysis
             var applyWordEmbeddingOption = new ApplyWordEmbeddingOption();
 
             // Create pipeline
-            var pipeline = context.Transforms.Conversion.MapValueToKey("Sentiment-key", "Sentiment")
-                           .Append(context.AutoML().SweepableTrainer(
+            var pipeline = context.AutoML().CreateSweepableEstimator(
                                // Create NormalizeText transformer and sweep over it.
                                (context, option) =>
                                {
@@ -44,10 +43,10 @@ namespace MLNet.Examples.SentimentAnalysis
                                normalizeTextOption,
                                new string[] { "SentimentText" },
                                new string[] { "txt" },
-                               nameof(TextNormalizingEstimator)))
+                               nameof(TextNormalizingEstimator))
                            .Append(context.Transforms.Text.TokenizeIntoWords("txt", "txt"))
                            .Append(context.Transforms.Text.RemoveDefaultStopWords("txt", "txt"))
-                           .Append(context.AutoML().SweepableTrainer(
+                           .Append(context.AutoML().CreateSweepableEstimator(
                                // Create ApplyWordEmbedding transformer and sweep over it
                                (context, option) =>
                                {
@@ -140,7 +139,7 @@ namespace MLNet.Examples.SentimentAnalysis
         {
             public void Report(IterationInfo value)
             {
-                Console.WriteLine(value.ParameterSet);
+                Console.WriteLine(value.Parameters);
                 Console.WriteLine($"validate score: {value.EvaluateScore}");
                 Console.WriteLine($"training time: {value.TrainingTime}");
             }

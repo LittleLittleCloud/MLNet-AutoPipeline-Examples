@@ -25,7 +25,7 @@ namespace Movie_Recommendation
             var gpSweeper = new GaussProcessSweeper(new GaussProcessSweeper.Option() { InitialPopulation = 50 });
             var pipeline = context.Transforms.Conversion.MapValueToKey("userId", "userId")
                            .Append(context.Transforms.Conversion.MapValueToKey("movieId", "movieId"))
-                           .Append(context.AutoML().SweepableTrainer(
+                           .Append(context.AutoML().CreateSweepableEstimator(
                                (context, option) =>
                                {
                                    return context.Recommendation().Trainers.MatrixFactorization(option);
@@ -111,7 +111,7 @@ namespace Movie_Recommendation
         {
             public void Report(IterationInfo value)
             {
-                Console.WriteLine(value.ParameterSet);
+                Console.WriteLine(value.Parameters);
                 Console.WriteLine($"validate score: {value.EvaluateScore}");
                 Console.WriteLine($"training time: {value.TrainingTime}");
             }

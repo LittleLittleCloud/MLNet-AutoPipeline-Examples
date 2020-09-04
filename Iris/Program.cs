@@ -64,7 +64,7 @@ namespace Iris
         {
             public void Report(IterationInfo value)
             {
-                Console.WriteLine(value.ParameterSet);
+                Console.WriteLine(value.Parameters);
                 Console.WriteLine($"validate score: {value.EvaluateScore}");
                 Console.WriteLine($"training time: {value.TrainingTime}");
             }
